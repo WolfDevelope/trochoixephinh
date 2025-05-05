@@ -1,169 +1,148 @@
+// Định nghĩa các biến và hàm
+const soDong = 3, soCot = 4;
+let mangO = [], viTriOTrong = 11, demGio = null, thoiGian = 0, dangChoi = false, soBuoc = 0, lichSu = [], sttVan = 1;
 
-const boardSize = { rows: 3, cols: 4 };
-let board = [];
-let emptyIndex = 11;
-let timer = null;
-let time = 0;
-let isPlaying = false;
-let moveCount = 0;
-let history = [];
-let gameNumber = 1;
+const nut = document.querySelector('button');
+const bang = document.querySelector('.grid');
+const dongHo = document.querySelector('.text-2xl.font-bold.text-green-700');
+const lichSuBody = document.querySelector('tbody');
 
-const btn = document.querySelector('button');
-const boardDiv = document.querySelector('.grid');
-const clock = document.querySelector('.text-2xl.font-bold.text-green-700');
-const tbody = document.querySelector('tbody');
-
-function formatTime(sec) {
-  const m = String(Math.floor(sec / 60)).padStart(2, '0');
-  const s = String(sec % 60).padStart(2, '0');
-  return `${m}:${s}`;
+// Định dạng thời gian
+function dinhDangGio(s) {
+  let m = String(Math.floor(s/60)).padStart(2, '0');
+  let giay = String(s%60).padStart(2, '0');
+  return m+':'+giay;
 }
 
-function drawBoard() {
-  boardDiv.innerHTML = '';
-  for (let i = 0; i < 12; i++) {
-    let val = board[i];
-    let color = '';
-    let text = '';
-    if (val === 0) {
-      color = 'bg-black';
-      text = '';
-    } else {
-      text = val;
-      switch (val) {
-        case 1: color = 'bg-green-100 text-green-500'; break;
-        case 2: color = 'bg-red-100 text-red-500'; break;
-        case 3: color = 'bg-blue-100 text-blue-500'; break;
-        case 4: color = 'bg-purple-100 text-purple-400'; break;
-        case 5: color = 'bg-yellow-100 text-yellow-400'; break;
-        case 6: color = 'bg-pink-100 text-pink-400'; break;
-        case 7: color = 'bg-blue-100 text-blue-400'; break;
-        case 8: color = 'bg-gray-100 text-gray-400'; break;
-        case 9: color = 'bg-green-100 text-green-500'; break;
-        case 10: color = 'bg-yellow-100 text-yellow-400'; break;
-        case 11: color = 'bg-green-100 text-green-400'; break;
+// Vẽ bàn cờ
+function veBanCo() {
+  bang.innerHTML = '';
+  for(let i=0;i<12;i++) {
+    let val = mangO[i], mau = '', txt = '';
+    if(val===0) { mau='bg-black'; txt=''; }
+    else {
+      txt = val;
+      switch(val) {
+        case 1: mau='bg-green-100 text-green-500'; break;
+        case 2: mau='bg-red-100 text-red-500'; break;
+        case 3: mau='bg-blue-100 text-blue-500'; break;
+        case 4: mau='bg-purple-100 text-purple-400'; break;
+        case 5: mau='bg-yellow-100 text-yellow-400'; break;
+        case 6: mau='bg-pink-100 text-pink-400'; break;
+        case 7: mau='bg-blue-100 text-blue-400'; break;
+        case 8: mau='bg-gray-100 text-gray-400'; break;
+        case 9: mau='bg-green-100 text-green-500'; break;
+        case 10: mau='bg-yellow-100 text-yellow-400'; break;
+        case 11: mau='bg-green-100 text-green-400'; break;
       }
     }
-    boardDiv.innerHTML += `<div class="flex items-center justify-center w-24 h-24 font-bold text-2xl rounded ${color}">${text}</div>`;
+    bang.innerHTML += `<div class="flex items-center justify-center w-24 h-24 font-bold text-2xl rounded ${mau}">${txt}</div>`;
   }
 }
 
-// Sinh board ngẫu nhiên
-function randomBoard() {
+// Trộn bàn cờ
+function tronBanCo() {
   let arr = [...Array(11).keys()].map(x=>x+1).concat(0);
-  // Xáo trộn 100 lần
-  let empty = arr.indexOf(0);
-  for (let t = 0; t < 100; t++) {
-    let possible = [];
-    let r = Math.floor(empty / 4), c = empty % 4;
-    if (c > 0) possible.push(empty - 1); // trái
-    if (c < 3) possible.push(empty + 1); // phải
-    if (r > 0) possible.push(empty - 4); // lên
-    if (r < 2) possible.push(empty + 4); // xuống
-    const swapWith = possible[Math.floor(Math.random() * possible.length)];
-    [arr[empty], arr[swapWith]] = [arr[swapWith], arr[empty]];
-    empty = swapWith;
+  let trong = arr.indexOf(0);
+  for(let i=0;i<100;i++) {
+    let khaNang = [], r = Math.floor(trong/4), c = trong%4;
+    if(c>0) khaNang.push(trong-1);
+    if(c<3) khaNang.push(trong+1);
+    if(r>0) khaNang.push(trong-4);
+    if(r<2) khaNang.push(trong+4);
+    let doi = khaNang[Math.floor(Math.random()*khaNang.length)];
+    [arr[trong], arr[doi]] = [arr[doi], arr[trong]];
+    trong = doi;
   }
   return arr;
 }
 
-function startGame() {
-  board = randomBoard();
-  emptyIndex = board.indexOf(0);
-  drawBoard();
-  moveCount = 0;
-  time = 0;
-  clock.textContent = formatTime(time);
-  isPlaying = true;
-  btn.textContent = 'Kết thúc';
-  btn.classList.remove('bg-green-500');
-  btn.classList.add('bg-red-500');
-  if (timer) clearInterval(timer);
-  timer = setInterval(() => {
-    time++;
-    clock.textContent = formatTime(time);
-  }, 1000);
+// Bắt đầu trò chơi
+function batDau() {
+  mangO = tronBanCo();
+  viTriOTrong = mangO.indexOf(0);
+  veBanCo();
+  soBuoc = 0;
+  thoiGian = 0;
+  dongHo.textContent = dinhDangGio(thoiGian);
+  dangChoi = true;
+  nut.textContent = 'Kết thúc';
+  nut.classList.remove('bg-green-500');
+  nut.classList.add('bg-red-500');
+  if(demGio) clearInterval(demGio);
+  demGio = setInterval(()=>{
+    thoiGian++;
+    dongHo.textContent = dinhDangGio(thoiGian);
+  },1000);
 }
 
-function stopGame(win = false) {
-  isPlaying = false;
-  btn.textContent = win ? 'Chơi lại' : 'Bắt đầu';
-  btn.classList.remove('bg-red-500');
-  btn.classList.add('bg-green-500');
-  if (timer) clearInterval(timer);
-  if (win) {
-    setTimeout(() => alert('YOU WIN!'), 200);
-    // Lưu lịch sử
-    history.push({
-      stt: gameNumber++,
-      moves: moveCount,
-      time: formatTime(time)
-    });
-    renderHistory();
+// Kết thúc trò chơi
+function ketThuc(thang=false) {
+  dangChoi = false;
+  nut.textContent = thang ? 'Chơi lại' : 'Bắt đầu';
+  nut.classList.remove('bg-red-500');
+  nut.classList.add('bg-green-500');
+  if(demGio) clearInterval(demGio);
+  if(thang) {
+    lichSu.push({stt: sttVan++, moves: soBuoc, time: dinhDangGio(thoiGian)});
+    hienLichSu();
   }
 }
 
-function renderHistory() {
-  tbody.innerHTML = '';
-  history.forEach(item => {
-    tbody.innerHTML += `<tr><td class="border-b">${item.stt}</td><td class="border-b">${item.moves}</td><td class="border-b">${item.time}</td></tr>`;
+// Hiển thị lịch sử
+function hienLichSu() {
+  lichSuBody.innerHTML = '';
+  lichSu.forEach(item => {
+    lichSuBody.innerHTML += `<tr><td class="border-b">${item.stt}</td><td class="border-b">${item.moves}</td><td class="border-b">${item.time}</td></tr>`;
   });
 }
-//Điều hướng
-function move(dir, countStep = true) {
-  if (!isPlaying) return;
-  const r = Math.floor(emptyIndex / 4);
-  const c = emptyIndex % 4;
-  let swapWith = null;
-  if ((dir === 'left' || dir === 'a') && c > 0) swapWith = emptyIndex - 1; // sang trái
-  if ((dir === 'right' || dir === 'd') && c < 3) swapWith = emptyIndex + 1; // sang phải
-  if ((dir === 'up' || dir === 'w') && r > 0) swapWith = emptyIndex - 4; // lên trên
-  if ((dir === 'down' || dir === 's') && r < 2) swapWith = emptyIndex + 4; // xuống dưới
-  if (swapWith !== null) {
-    [board[emptyIndex], board[swapWith]] = [board[swapWith], board[emptyIndex]];
-    emptyIndex = swapWith;
-    drawBoard();
-    if (countStep) moveCount++;
-    if (isWin()) {
-      stopGame(true);
-    }
+
+// Di chuyển ô
+function diChuyen(huong, dem=true) {
+  if(!dangChoi) return;
+  let r = Math.floor(viTriOTrong/4), c = viTriOTrong%4, doi = null;
+  if((huong==='left'||huong==='a')&&c>0) doi=viTriOTrong-1;
+  if((huong==='right'||huong==='d')&&c<3) doi=viTriOTrong+1;
+  if((huong==='up'||huong==='w')&&r>0) doi=viTriOTrong-4;
+  if((huong==='down'||huong==='s')&&r<2) doi=viTriOTrong+4;
+  if(doi!==null) {
+    [mangO[viTriOTrong], mangO[doi]] = [mangO[doi], mangO[viTriOTrong]];
+    viTriOTrong = doi;
+    veBanCo();
+    if(dem) soBuoc++;
+    if(daThang()) ketThuc(true);
   }
 }
 
-function isWin() {
-  for (let i = 0; i < 11; i++) {
-    if (board[i] !== i+1) return false;
-  }
-  return board[11] === 0;   
+// Kiểm tra thắng
+function daThang() {
+  for(let i=0;i<11;i++) if(mangO[i]!==i+1) return false;
+  return mangO[11]===0;
 }
 
-//Bắt đầu/Kết thúc/Chơi lại
-btn.onclick = () => {
-  if (!isPlaying) {
-    startGame();
-  } else {
-    stopGame();
-  }
+// Sự kiện nút
+nut.onclick = ()=>{
+  if(!dangChoi) batDau();
+  else ketThuc();
 };
 
-//Bàn phím
-document.addEventListener('keydown', (e) => {
-  if (!isPlaying) return;
+// Sự kiện bàn phím
+document.addEventListener('keydown', e => {
+  if(!dangChoi) return;
   switch(e.key.toLowerCase()) {
-    case 'arrowleft': case 'a': move('left'); break;
-    case 'arrowright': case 'd': move('right'); break;
-    case 'arrowup': case 'w': move('up'); break;
-    case 'arrowdown': case 's': move('down'); break;
+    case 'arrowleft': case 'a': diChuyen('left'); break;
+    case 'arrowright': case 'd': diChuyen('right'); break;
+    case 'arrowup': case 'w': diChuyen('up'); break;
+    case 'arrowdown': case 's': diChuyen('down'); break;
   }
 });
 
-//Khởi tạo ban đầu
-function init() {
-  board = [1,2,3,4,5,6,7,8,9,10,11,0];
-  emptyIndex = 11;
-  drawBoard();
-  clock.textContent = '00:00';
-  renderHistory();
+// Khởi tạo
+function khoiTao() {
+  mangO = [1,2,3,4,5,6,7,8,9,10,11,0];
+  viTriOTrong = 11;
+  veBanCo();
+  dongHo.textContent = '00:00';
+  hienLichSu();
 }
-init();
+khoiTao();
