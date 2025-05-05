@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Xếp Hình</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-5xl mx-auto mt-8 p-6 bg-white rounded-xl shadow-lg">
+    <div class="flex flex-col items-center">
+      <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded shadow mb-6">Bắt đầu</button>
+    </div>
+    <div class="flex justify-center gap-8">
+      <!-- Game Board -->
+      <div class="grid grid-cols-4 grid-rows-3 gap-4 p-6 bg-gray-50 rounded-xl">
+        <div class="flex items-center justify-center w-24 h-24 bg-green-100 text-green-500 font-bold text-2xl rounded">1</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-red-100 text-red-500 font-bold text-2xl rounded">2</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-blue-100 text-blue-500 font-bold text-2xl rounded">3</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-purple-100 text-purple-400 font-bold text-2xl rounded">4</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-yellow-100 text-yellow-400 font-bold text-2xl rounded">5</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-pink-100 text-pink-400 font-bold text-2xl rounded">6</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-blue-100 text-blue-400 font-bold text-2xl rounded">7</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-gray-100 text-gray-400 font-bold text-2xl rounded">8</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-green-100 text-green-500 font-bold text-2xl rounded">9</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-yellow-100 text-yellow-400 font-bold text-2xl rounded">10</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-green-100 text-green-400 font-bold text-2xl rounded">11</div>
+        <div class="flex items-center justify-center w-24 h-24 bg-black text-black font-bold text-2xl rounded"></div>
+      </div>
+      <!-- Sidebar -->
+      <div class="flex flex-col gap-4">
+        <!-- Đồng hồ -->
+        <div class="bg-green-100 rounded-lg shadow text-center py-4 px-8 mb-2">
+          <div class="font-semibold text-lg mb-1">Đồng Hồ</div>
+          <div class="text-2xl font-bold text-green-700">00:00</div>
+        </div>
+        <!-- Hướng dẫn di chuyển -->
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+          <div class="font-semibold mb-2">Hướng Dẫn Di Chuyển</div>
+          <div class="flex flex-col items-center gap-1">
+            <div class="flex justify-center gap-1">
+              <span class="bg-gray-100 px-2 py-1 rounded">↑</span>
+            </div>
+            <div class="flex justify-center gap-1">
+              <span class="bg-gray-100 px-2 py-1 rounded">←</span>
+              <span class="bg-gray-100 px-2 py-1 rounded">↓</span>
+              <span class="bg-gray-100 px-2 py-1 rounded">→</span>
+            </div>
+            <div class="flex justify-center gap-1 mt-2">
+                <span class="bg-gray-100 px-2 py-1 rounded">W</span>
+            </div>
+            <div class="flex justify-center gap-1">
+              <span class="bg-gray-100 px-2 py-1 rounded">A</span>
+              <span class="bg-gray-100 px-2 py-1 rounded">S</span>
+              <span class="bg-gray-100 px-2 py-1 rounded">D</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Lịch sử lượt chơi -->
+    <div class="mt-10">
+      <div class="bg-gray-50 rounded-lg shadow p-4">
+        <div class="font-semibold text-center mb-2">Lịch Sử Lượt Chơi</div>
+        <table class="min-w-full text-center">
+          <thead>
+            <tr>
+              <th class="px-2 py-1 border-b">#</th>
+              <th class="px-2 py-1 border-b">Bước đi</th>
+              <th class="px-2 py-1 border-b">Thời Gian</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</html>
